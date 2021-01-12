@@ -1,0 +1,9 @@
+{
+  "name": "zwallet-api",
+  "version": "1.0.0",
+  "description": "Zwallet Back-End API",
+  "main": "index.js",
+  "repository": "https://github.com/syauqeesy/zwallet-api",
+  "author": "Ahmad Syauqi",
+  "license": "MIT"
+}
