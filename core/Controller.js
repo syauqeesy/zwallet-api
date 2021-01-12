@@ -6,7 +6,8 @@ class Controller extends Config {
     super()
 
     this.modules = {
-      express: require('express')
+      express: require('express'),
+      Sequelize: require('sequelize')
     }
   }
 }

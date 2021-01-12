@@ -1,3 +1,10 @@
 # Server configuration
 PORT=
 BASE_URL=
+
+# Database configuration
+DB_HOST=
+DB_USERNAME=
+DB_PASSWORD=
+DB_NAME=
+DB_DIALECT=

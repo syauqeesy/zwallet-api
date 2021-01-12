@@ -14,8 +14,9 @@ class Server extends Controller {
     })
   }
 
-  run () {
+  run (callback) {
     this.listen()
+    callback()
   }
 }
 
