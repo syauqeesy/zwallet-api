@@ -10,3 +10,6 @@ module.exports = router
   .post('/register', (req, res) => {
     user.register(req, res)
   })
+  .post('/login', (req, res) => {
+    user.login(req, res)
+  })

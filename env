@@ -2,6 +2,9 @@
 PORT=
 BASE_URL=
 
+# Application configuration
+SECRET_KEY=
+
 # Database configuration
 DB_HOST=
 DB_USERNAME=

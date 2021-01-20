@@ -9,7 +9,8 @@ class Controller extends Config {
       express: require('express'),
       Sequelize: require('sequelize'),
       cors: require('cors'),
-      bcrypt: require('bcrypt')
+      bcrypt: require('bcrypt'),
+      jsonwebtoken: require('jsonwebtoken')
     }
 
     this.models = {
