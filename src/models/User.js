@@ -16,6 +16,10 @@ const User = (sequelize, DataTypes) => {
     static associate (models) {
       // define association here
     }
+
+    toJSON () {
+      return { ...this.get(), avatar: controller.BASE_URL + '/images/' + this.get('avatar') }
+    }
   };
   User.init({
     id: {
