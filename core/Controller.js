@@ -7,7 +7,13 @@ class Controller extends Config {
 
     this.modules = {
       express: require('express'),
-      Sequelize: require('sequelize')
+      Sequelize: require('sequelize'),
+      cors: require('cors'),
+      bcrypt: require('bcrypt')
+    }
+
+    this.models = {
+      user: require(path.join(__dirname, '../src/models/User'))
     }
   }
 }
