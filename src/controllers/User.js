@@ -8,7 +8,7 @@ class User extends Controller {
       const salt = await this.modules.bcrypt.genSalt(10)
       const hashedPassword = await this.modules.bcrypt.hash(password, salt)
       const result = await this.models.user.create({ userName, email, password: hashedPassword, securityPIN })
-      res.status(201).json({
+      return res.status(201).json({
         status: 'Success',
         message: 'Register success!',
         user: result
@@ -42,13 +42,37 @@ class User extends Controller {
       }
 
       const token = this.modules.jsonwebtoken.sign({ userId: result.id }, this.SECRET_KEY)
-      res.status(200).json({
+      return res.status(200).json({
         status: 'Success',
         message: 'Login success!',
         data: {
           token,
           userId: result.id
         }
+      })
+    } catch (error) {
+      console.log(error)
+      res.status(500).json({
+        status: 'Failed',
+        message: 'Internal server error'
+      })
+    }
+  }
+
+  async getById (req, res) {
+    try {
+      const result = await this.models.user.findOne({ where: { id: req.params.id } })
+      if (!result) {
+        return res.status(404).json({
+          status: 'Failed',
+          message: 'User not found!'
+        })
+      }
+
+      return res.status(200).json({
+        status: 'Success',
+        message: 'User data fetched!',
+        user: result
       })
     } catch (error) {
       console.log(error)
