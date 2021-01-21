@@ -21,6 +21,7 @@ class Server extends Controller {
     this.app.use(this.modules.express.urlencoded({ extended: false }))
     this.app.use('/images', this.modules.express.static('images'))
     this.app.use('/api/users', require(path.join(__dirname, '../src/routes/user')))
+    this.app.use('/api/transactions', require(path.join(__dirname, '../src/routes/transaction')))
     callback()
   }
 }
