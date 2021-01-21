@@ -5,17 +5,25 @@ class User extends Controller {
   async register (req, res) {
     const { userName, email, password, securityPIN } = req.body
     try {
+      const user = await this.models.user.findOne({ where: { email } })
+      if (user) {
+        return res.status(400).json({
+          status: 'Failed',
+          message: 'Email already used!'
+        })
+      }
+
       const salt = await this.modules.bcrypt.genSalt(10)
       const hashedPassword = await this.modules.bcrypt.hash(password, salt)
       const result = await this.models.user.create({ userName, email, password: hashedPassword, securityPIN })
       return res.status(201).json({
         status: 'Success',
         message: 'Register success!',
-        user: result
+        data: result
       })
     } catch (error) {
       console.log(error)
-      res.status(500).json({
+      return res.status(500).json({
         status: 'Failed',
         message: 'Internal server error'
       })
@@ -52,7 +60,7 @@ class User extends Controller {
       })
     } catch (error) {
       console.log(error)
-      res.status(500).json({
+      return res.status(500).json({
         status: 'Failed',
         message: 'Internal server error'
       })
@@ -72,11 +80,97 @@ class User extends Controller {
       return res.status(200).json({
         status: 'Success',
         message: 'User data fetched!',
-        user: result
+        data: result
       })
     } catch (error) {
       console.log(error)
-      res.status(500).json({
+      return res.status(500).json({
+        status: 'Failed',
+        message: 'Internal server error'
+      })
+    }
+  }
+
+  async search (req, res) {
+    const { Op } = this.modules.Sequelize
+    try {
+      const index = parseInt(req.query.page) || 1
+      const numOfUsers = await this.models.user.findAll({
+        where: {
+          [Op.or]: [
+            {
+              firstName: {
+                [Op.like]: `%${req.query.keyword || ''}%`
+              }
+            },
+            {
+              lastName: {
+                [Op.like]: `%${req.query.keyword || ''}%`
+              }
+            },
+            {
+              phoneNumber: {
+                [Op.like]: `%${req.query.keyword || ''}%`
+              }
+            },
+            {
+              email: {
+                [Op.like]: `%${req.query.keyword || ''}%`
+              }
+            }
+          ]
+        }
+      })
+
+      const result = await this.models.user.findAll({
+        where: {
+          [Op.or]: [
+            {
+              firstName: {
+                [Op.like]: `%${req.query.keyword || ''}%`
+              }
+            },
+            {
+              lastName: {
+                [Op.like]: `%${req.query.keyword || ''}%`
+              }
+            },
+            {
+              phoneNumber: {
+                [Op.like]: `%${req.query.keyword || ''}%`
+              }
+            },
+            {
+              email: {
+                [Op.like]: `%${req.query.keyword || ''}%`
+              }
+            }
+          ]
+        },
+        limit: 10,
+        offset: index * 10 - 10
+      })
+
+      if (result.length < 1) {
+        return res.status(404).json({
+          status: 'Failed',
+          message: 'User not found!'
+        })
+      }
+
+      return res.status(200).json({
+        status: 'Success',
+        message: 'Users found!',
+        data: result,
+        dataPagination: {
+          previous: index - 1 > 0 ? index - 1 : null,
+          current: index,
+          next: index + 1 <= Math.ceil(parseInt(numOfUsers.length) / 10) ? index + 1 : null
+        }
+      })
+    } catch (error) {
+      console.log(error)
+      return res.status(500).json({
         status: 'Failed',
         message: 'Internal server error'
       })

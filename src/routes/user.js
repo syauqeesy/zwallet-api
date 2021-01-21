@@ -18,3 +18,6 @@ module.exports = router
   .get('/:id', [verifyToken], (req, res) => {
     user.getById(req, res)
   })
+  .get('/', [verifyToken], (req, res) => {
+    user.search(req, res)
+  })
