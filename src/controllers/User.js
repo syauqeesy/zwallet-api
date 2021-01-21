@@ -176,6 +176,80 @@ class User extends Controller {
       })
     }
   }
+
+  async update (req, res) {
+    try {
+      const user = await this.models.user.findOne({ where: { id: req.params.id } })
+      if (!user) {
+        return res.status(404).json({
+          status: 'Failed',
+          message: 'User not found!'
+        })
+      }
+
+      let avatar = user.avatar
+      if (req.file) {
+        avatar = req.file.filename
+        if (user.avatar !== 'user_default.jpg') {
+          await this.modules.fs.unlink(path.join(__dirname, '../../images', user.avatar))
+        }
+      }
+
+      let password = user.password
+      if (req.body.password) {
+        const passwordMatched = await this.modules.bcrypt.compare(req.body.currentPassword, user.password)
+        if (!passwordMatched) {
+          return res.status(400).json({
+            status: 'Failed',
+            message: 'Current password wrong!'
+          })
+        }
+
+        const salt = await this.modules.bcrypt.genSalt(10)
+        password = await this.modules.bcrypt.hash(req.body.password, salt)
+      }
+
+      let securityPIN = user.securityPIN
+      if (req.body.securityPIN) {
+        if (req.body.currentSecurityPIN !== securityPIN) {
+          return res.status(400).json({
+            status: 'Failed',
+            message: 'Current security PIN wrong!'
+          })
+        }
+
+        securityPIN = req.body.securityPIN
+      }
+
+      await this.models.user.update({
+        firstName: req.body.firstName || user.firstName,
+        lastName: req.body.lastName || user.lastName,
+        avatar: avatar,
+        password: password,
+        phoneNumber: req.body.phoneNumber || user.phoneNumber,
+        securityPIN: securityPIN
+      },
+      {
+        where: {
+          id: req.params.id
+        }
+      })
+
+      return res.status(200).json({
+        status: 'Success',
+        message: 'User data updated!',
+        data: {
+          userId: user.id
+        }
+      })
+    } catch (error) {
+      console.log(error)
+      return res.status(500).json({
+        status: 'Failed',
+        message: 'Internal server error'
+      })
+    }
+  }
 }
 
 module.exports = User

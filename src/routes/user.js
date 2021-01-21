@@ -7,6 +7,7 @@ const router = controller.modules.express.Router()
 const user = new User()
 
 const verifyToken = require(path.join(__dirname, '../middlewares/verifyToken'))
+const upload = require(path.join(__dirname, '../middlewares/upload'))
 
 module.exports = router
   .post('/register', (req, res) => {
@@ -20,4 +21,7 @@ module.exports = router
   })
   .get('/', [verifyToken], (req, res) => {
     user.search(req, res)
+  })
+  .patch('/:id', [verifyToken, upload], (req, res) => {
+    user.update(req, res)
   })
