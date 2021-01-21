@@ -13,9 +13,10 @@ const User = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate ({ Transaction }) {
+    static associate ({ Transaction, Transfer }) {
       // define association here
       this.hasMany(Transaction, { foreignKey: 'userId', as: 'transactions' })
+      this.hasMany(Transfer, { foreignKey: 'userId', as: 'transfers' })
     }
 
     toJSON () {

@@ -6,47 +6,39 @@ const { development: config } = require(path.join(__dirname, '../../core/Databas
 
 const controller = new Controller()
 
-const Transaction = (sequelize, DataTypes) => {
-  class Transaction extends Model {
+const Transfer = (sequelize, DataTypes) => {
+  class Transfer extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate ({ User, Transfer }) {
+    static associate ({ Transaction, User }) {
       // define association here
-      this.belongsTo(User, { foreignKey: 'userId', as: 'sender' })
-      this.hasOne(Transfer, { foreignKey: 'transactionId', as: 'transfer' })
-    }
-
-    toJSON () {
-      return { ...this.get(), amount: parseInt(this.get('amount')) }
+      this.belongsTo(Transaction, { foreignKey: 'transactionId', as: 'transaction' })
+      this.belongsTo(User, { foreignKey: 'userId', as: 'receiver' })
     }
   };
-  Transaction.init({
+  Transfer.init({
     id: {
       type: DataTypes.UUID,
       primaryKey: true,
       allowNull: false,
       defaultValue: DataTypes.UUIDV4
     },
-    userId: {
+    transactionId: {
       type: DataTypes.UUID,
       allowNull: false
     },
-    amount: {
-      type: DataTypes.STRING(10),
-      allowNull: false
-    },
-    type: {
-      type: DataTypes.STRING(10),
+    userId: {
+      type: DataTypes.UUID,
       allowNull: false
     }
   }, {
     sequelize,
-    modelName: 'Transaction'
+    modelName: 'Transfer'
   })
-  return Transaction
+  return Transfer
 }
 
-module.exports = Transaction(new controller.modules.Sequelize(config.database, config.username, config.password, config), controller.modules.Sequelize.DataTypes)
+module.exports = Transfer(new controller.modules.Sequelize(config.database, config.username, config.password, config), controller.modules.Sequelize.DataTypes)
