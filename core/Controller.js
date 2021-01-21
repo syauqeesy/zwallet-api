@@ -16,7 +16,8 @@ class Controller extends Config {
     }
 
     this.models = {
-      user: require(path.join(__dirname, '../src/models/User'))
+      user: require(path.join(__dirname, '../src/models/User')),
+      transaction: require(path.join(__dirname, '../src/models/Transaction'))
     }
   }
 }
