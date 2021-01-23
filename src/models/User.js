@@ -70,6 +70,15 @@ const User = (sequelize, DataTypes) => {
     securityPIN: {
       type: DataTypes.STRING(6),
       allowNull: false
+    },
+    activationToken: {
+      type: DataTypes.STRING(32),
+      allowNull: false
+    },
+    isActive: {
+      type: DataTypes.STRING(8),
+      allowNull: false,
+      defaultValue: 'inactive'
     }
   }, {
     sequelize,

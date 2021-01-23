@@ -1,5 +1,6 @@
 const path = require('path')
 const Controller = require(path.join(__dirname, '../../core/Controller'))
+const mailSender = require(path.join(__dirname, '../helpers/mailSender'))
 
 class User extends Controller {
   async register (req, res) {
@@ -15,11 +16,60 @@ class User extends Controller {
 
       const salt = await this.modules.bcrypt.genSalt(10)
       const hashedPassword = await this.modules.bcrypt.hash(password, salt)
-      const result = await this.models.user.create({ userName, email, password: hashedPassword, securityPIN })
+
+      let activationToken = ''
+      const chars = '6q1w3e4r5t7y8u0i9opasdf41ghjklz2xcvbnm'
+
+      for (let i = 0; i < 32; i++) {
+        activationToken += chars.charAt(Math.floor(Math.random() * 37))
+      }
+
+      const result = await this.models.user.create({ userName, email, password: hashedPassword, securityPIN, activationToken })
+
+      await mailSender(email, activationToken, result.id)
+
       return res.status(201).json({
         status: 'Success',
         message: 'Register success!',
         data: result
+      })
+    } catch (error) {
+      console.log(error)
+      return res.status(500).json({
+        status: 'Failed',
+        message: 'Internal server error'
+      })
+    }
+  }
+
+  async activate (req, res) {
+    try {
+      const user = await this.models.user.findOne({ where: { id: req.body.userId } })
+      if (!user) {
+        return res.status(404).json({
+          status: 'Failed',
+          message: 'User not found!'
+        })
+      }
+
+      if (user.isActive !== 'inactive') {
+        return res.status(400).json({
+          status: 'Failed',
+          message: 'Account is already active!'
+        })
+      }
+
+      if (req.body.activationToken !== user.activationToken) {
+        return res.status(400).json({
+          status: 'Failed',
+          message: 'Activation token wrong!'
+        })
+      }
+
+      await this.models.user.update({ isActive: 'active' }, { where: { id: user.id } })
+      return res.status(200).json({
+        status: 'Success',
+        message: 'Account activation success!'
       })
     } catch (error) {
       console.log(error)

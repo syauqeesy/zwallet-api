@@ -1,9 +1,12 @@
 # Server configuration
 PORT=
 BASE_URL=
+CLIENT_BASE_URL=
 
 # Application configuration
 SECRET_KEY=
+MAIL_USER=
+MAIL_PASSWORD=
 
 # Database configuration
 DB_HOST=

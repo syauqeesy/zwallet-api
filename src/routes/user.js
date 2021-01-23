@@ -22,6 +22,9 @@ module.exports = router
   .get('/', [verifyToken], (req, res) => {
     user.search(req, res)
   })
+  .patch('/activate', (req, res) => {
+    user.activate(req, res)
+  })
   .patch('/:id', [verifyToken, upload], (req, res) => {
     user.update(req, res)
   })

@@ -12,7 +12,8 @@ class Controller extends Config {
       bcrypt: require('bcrypt'),
       jsonwebtoken: require('jsonwebtoken'),
       multer: require('multer'),
-      fs: require('fs/promises')
+      fs: require('fs/promises'),
+      nodemailer: require('nodemailer')
     }
 
     this.models = {

@@ -43,6 +43,14 @@ module.exports = {
         type: Sequelize.STRING(6),
         allowNull: false
       },
+      activationToken: {
+        type: Sequelize.STRING(32),
+        allowNull: false
+      },
+      isActive: {
+        type: Sequelize.STRING(8),
+        allowNull: false
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
