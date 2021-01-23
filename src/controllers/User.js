@@ -91,6 +91,13 @@ class User extends Controller {
         })
       }
 
+      if (result.isActive !== 'active') {
+        return res.status(400).json({
+          status: 'Failed',
+          message: 'Account is not activated! Please check your email and activate.'
+        })
+      }
+
       const passwordMatched = await this.modules.bcrypt.compare(password, result.password)
       if (!passwordMatched) {
         return res.status(400).json({
