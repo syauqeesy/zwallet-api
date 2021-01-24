@@ -41,6 +41,11 @@ const Transaction = (sequelize, DataTypes) => {
     type: {
       type: DataTypes.STRING(10),
       allowNull: false
+    },
+    notes: {
+      type: DataTypes.STRING(512),
+      defaultValue: '-',
+      allowNull: false
     }
   }, {
     sequelize,

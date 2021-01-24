@@ -35,7 +35,7 @@ const mailSender = (to, activationToken, userId) => {
             }
 
             .btn {
-              width: 75%;
+              width: 50%;
               outline: none;
               border-radius: .3em;
               background-color: #0D6EFD;

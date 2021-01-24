@@ -41,7 +41,7 @@ class Transaction extends Controller {
         })
       }
 
-      const transaction = await this.models.transaction.create({ userId: sender.id, amount: req.body.amount, type: 'Transfer' })
+      const transaction = await this.models.transaction.create({ userId: sender.id, amount: req.body.amount, type: 'Transfer', notes: req.body.notes })
       await this.models.transfer.create({ transactionId: transaction.id, userId: receiver.id })
 
       await this.models.user.update({ balance: parseInt(sender.balance) - parseInt(req.body.amount) }, { where: { id: sender.id } })

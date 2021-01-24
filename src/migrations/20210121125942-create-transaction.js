@@ -19,6 +19,10 @@ module.exports = {
         type: Sequelize.STRING(10),
         allowNull: false
       },
+      notes: {
+        type: Sequelize.STRING(512),
+        allowNull: false
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
