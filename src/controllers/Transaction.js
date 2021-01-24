@@ -2,6 +2,14 @@ const path = require('path')
 const Controller = require(path.join(__dirname, '../../core/Controller'))
 
 class Transaction extends Controller {
+  constructor () {
+    super()
+
+    this.models.transfer.associate({ User: this.models.user, Transaction: this.models.transaction })
+    this.models.transaction.associate({ User: this.models.user, Transfer: this.models.transfer })
+    this.models.user.associate({ Transaction: this.models.transaction, Transfer: this.models.transfer })
+  }
+
   async transfer (req, res) {
     try {
       const receiver = await this.models.user.findOne({ where: { id: req.body.receiver } })
@@ -49,7 +57,51 @@ class Transaction extends Controller {
 
       return res.status(201).json({
         status: 'Success',
-        message: 'Transfer success!'
+        message: 'Transfer success!',
+        data: transaction.id
+      })
+    } catch (error) {
+      console.log(error)
+      return res.status(500).json({
+        status: 'Failed',
+        message: 'Internal server error'
+      })
+    }
+  }
+
+  async transferById (req, res) {
+    try {
+      const result = await this.models.transaction.findOne({
+        where: {
+          id: req.params.id
+        },
+        include: [
+          {
+            model: this.models.transfer,
+            as: 'transfer',
+            include: {
+              model: this.models.user,
+              as: 'receiver'
+            }
+          },
+          {
+            model: this.models.user,
+            as: 'sender'
+          }
+        ]
+      })
+
+      if (!result) {
+        return res.status(404).json({
+          status: 'Failed',
+          message: 'Transfer not found!'
+        })
+      }
+
+      return res.status(201).json({
+        status: 'Success',
+        message: 'Transfer found!',
+        data: result
       })
     } catch (error) {
       console.log(error)
@@ -62,10 +114,6 @@ class Transaction extends Controller {
 
   async transferHistory (req, res) {
     try {
-      this.models.user.associate({ Transaction: this.models.transaction, Transfer: this.models.transfer })
-      this.models.transaction.associate({ User: this.models.user, Transfer: this.models.transfer })
-      this.models.transfer.associate({ User: this.models.user, Transaction: this.models.transaction })
-
       const user = await this.models.user.findOne({ where: { id: req.params.id } })
       if (!user) {
         return res.status(404).json({

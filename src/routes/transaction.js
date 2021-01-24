@@ -12,6 +12,9 @@ module.exports = router
   .post('/create/transfer', [verifyToken], (req, res) => {
     transaction.transfer(req, res)
   })
+  .get('/transfer/:id', [verifyToken], (req, res) => {
+    transaction.transferById(req, res)
+  })
   .get('/transfer/history/:id', [verifyToken], (req, res) => {
     transaction.transferHistory(req, res)
   })
