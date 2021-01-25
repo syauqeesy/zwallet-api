@@ -114,6 +114,7 @@ class Transaction extends Controller {
 
   async transferHistory (req, res) {
     try {
+      const index = parseInt(req.query.page) || 1
       const user = await this.models.user.findOne({ where: { id: req.params.id } })
       if (!user) {
         return res.status(404).json({
@@ -122,7 +123,13 @@ class Transaction extends Controller {
         })
       }
 
-      const transactions = await this.models.transaction.findAll({
+      const numOfTransfers = await this.models.transaction.findAll({
+        where: {
+          userId: user.id
+        }
+      })
+
+      const transfers = await this.models.transaction.findAll({
         where: {
           userId: user.id
         },
@@ -139,40 +146,50 @@ class Transaction extends Controller {
             model: this.models.user,
             as: 'sender'
           }
-        ]
+        ],
+        order: [
+          ['createdAt', 'DESC']
+        ],
+        limit: 7,
+        offset: index * 7 - 7
       })
 
-      const transfers = await this.models.transaction.findAll({
-        include: [
-          {
-            model: this.models.transfer,
-            as: 'transfer',
-            where: {
-              userId: user.id
-            },
-            include: {
-              model: this.models.user,
-              as: 'receiver'
-            }
-          },
-          {
-            model: this.models.user,
-            as: 'sender'
-          }
-        ]
-      })
+      // const transfers = await this.models.transaction.findAll({
+      //   include: [
+      //     {
+      //       model: this.models.transfer,
+      //       as: 'transfer',
+      //       where: {
+      //         userId: user.id
+      //       },
+      //       include: {
+      //         model: this.models.user,
+      //         as: 'receiver'
+      //       }
+      //     },
+      //     {
+      //       model: this.models.user,
+      //       as: 'sender'
+      //     }
+      //   ]
+      // })
 
-      if (transactions.length < 0 && transfers.length < 0) {
-        return res.status(404).json({
-          status: 'Failed',
-          message: 'No transfers found!'
-        })
-      }
+      // if (transactions.length < 0 && transfers.length < 0) {
+      //   return res.status(404).json({
+      //     status: 'Failed',
+      //     message: 'No transfers found!'
+      //   })
+      // }
 
       return res.status(200).json({
         status: 'Success',
         message: 'Transfers found!',
-        data: [...transactions, ...transfers]
+        data: transfers,
+        dataPagination: {
+          previous: index - 1 > 0 ? index - 1 : null,
+          current: index,
+          next: index + 1 <= Math.ceil(parseInt(numOfTransfers.length) / 7) ? index + 1 : null
+        }
       })
     } catch (error) {
       console.log(error)
