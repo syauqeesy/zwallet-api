@@ -148,7 +148,7 @@ class Transaction extends Controller {
           }
         ],
         order: [
-          ['createdAt', 'DESC']
+          [req.query.sortBy || 'createdAt', req.query.order || 'DESC']
         ],
         limit: 7,
         offset: index * 7 - 7
@@ -174,12 +174,12 @@ class Transaction extends Controller {
       //   ]
       // })
 
-      // if (transactions.length < 0 && transfers.length < 0) {
-      //   return res.status(404).json({
-      //     status: 'Failed',
-      //     message: 'No transfers found!'
-      //   })
-      // }
+      if (transfers.length < 0) {
+        return res.status(404).json({
+          status: 'Failed',
+          message: 'No transfers found!'
+        })
+      }
 
       return res.status(200).json({
         status: 'Success',
