@@ -12,7 +12,7 @@ module.exports = {
         allowNull: false
       },
       amount: {
-        type: Sequelize.STRING(10),
+        type: Sequelize.INTEGER,
         allowNull: false
       },
       type: {

@@ -49,7 +49,7 @@ class Transaction extends Controller {
         })
       }
 
-      const transaction = await this.models.transaction.create({ userId: sender.id, amount: req.body.amount, type: 'Transfer', notes: req.body.notes })
+      const transaction = await this.models.transaction.create({ userId: sender.id, amount: parseInt(req.body.amount), type: 'Transfer', notes: req.body.notes })
       await this.models.transfer.create({ transactionId: transaction.id, userId: receiver.id })
 
       await this.models.user.update({ balance: parseInt(sender.balance) - parseInt(req.body.amount) }, { where: { id: sender.id } })
@@ -153,26 +153,6 @@ class Transaction extends Controller {
         limit: 7,
         offset: index * 7 - 7
       })
-
-      // const transfers = await this.models.transaction.findAll({
-      //   include: [
-      //     {
-      //       model: this.models.transfer,
-      //       as: 'transfer',
-      //       where: {
-      //         userId: user.id
-      //       },
-      //       include: {
-      //         model: this.models.user,
-      //         as: 'receiver'
-      //       }
-      //     },
-      //     {
-      //       model: this.models.user,
-      //       as: 'sender'
-      //     }
-      //   ]
-      // })
 
       if (transfers.length < 0) {
         return res.status(404).json({

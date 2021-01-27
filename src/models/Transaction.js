@@ -35,7 +35,7 @@ const Transaction = (sequelize, DataTypes) => {
       allowNull: false
     },
     amount: {
-      type: DataTypes.STRING(10),
+      type: DataTypes.INTEGER,
       allowNull: false
     },
     type: {
