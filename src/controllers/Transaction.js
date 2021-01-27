@@ -141,10 +141,6 @@ class Transaction extends Controller {
               model: this.models.user,
               as: 'receiver'
             }
-          },
-          {
-            model: this.models.user,
-            as: 'sender'
           }
         ],
         order: [
