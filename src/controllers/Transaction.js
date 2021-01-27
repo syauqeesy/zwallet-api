@@ -150,7 +150,7 @@ class Transaction extends Controller {
         offset: index * 7 - 7
       })
 
-      if (transfers.length < 0) {
+      if (transfers.length < 1) {
         return res.status(404).json({
           status: 'Failed',
           message: 'No transfers found!'
