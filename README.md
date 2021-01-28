@@ -19,6 +19,4 @@ git clone https://github.com/syauqeesy/zwallet-api.git
 yarn install
 ```
 
-3. Setup images folder
-<br />
-Copy _images folder to images in project root folder
+3. Copy _images folder to images in project root folder
