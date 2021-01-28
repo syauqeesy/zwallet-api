@@ -20,4 +20,5 @@ yarn install
 ```
 
 3. Setup images folder
+<br />
 Copy _images folder to images in project root folder
