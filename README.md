@@ -5,6 +5,8 @@ Zwallet Back-End API
 - Node.js
 - MySQL
 - yarn package manager
+- Postman (optional)
+- MySQL workbench (optional)
 
 ## Installation
 1. clone repository
@@ -56,3 +58,6 @@ yarn devStart
 or
 yarn start
 ```
+
+## Postman collection
+[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/cdb2c982deaeb2063c8f)
